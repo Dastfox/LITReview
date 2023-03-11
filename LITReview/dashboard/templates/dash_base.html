@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>{% block title %}{% endblock %}</title>
+	</head>
+	<body>
+		<header>
+			<nav>
+				<!-- Ajoutez ici la navigation de votre site -->
+				<a href="{% url 'logout' %}">Logout</a>
+			</nav>
+		</header>
+		<main>{% block content %}{% endblock %}</main>
+		<footer>
+			<!-- Ajoutez ici le pied de page de votre site -->
+		</footer>
+	</body>
+</html>
