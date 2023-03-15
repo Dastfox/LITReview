@@ -9,10 +9,24 @@
 		<meta charset="UTF-8" />
 		<title>{% block title %}{% endblock %}</title>
 	</head>
+	<nav class="nav-container">
+		<div class="nav-links">
+			<h3>{% block nav_title %}{% endblock %}</h3>
+			{% if user.is_authenticated %}
+			<ul>
+				<li><a href="#">Flux</a></li>
+				<li><a href="#">Posts</a></li>
+				<li><a href="#">Abonnements</a></li>
+				<li><a href="{% url 'logout' %}">Se déconnecter</a></li>
+			</ul>
+			{% endif %}
+		</div>
+	</nav>
+	<br />
+	<br />
+	<br />
+	<br />
 	<body>
-		<header>
-			<!-- header content here -->
-		</header>
 		<main>{% block content %} {% endblock %}</main>
 		<footer>
 			<!-- footer content here -->

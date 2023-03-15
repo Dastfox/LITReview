@@ -1,0 +1,75 @@
+{% extends 'base.html' %} {% block title %} Créer une critique {% endblock %} {% block nav_title %} Créer une critique {% endblock %} {% block content %}
+<form
+	method="POST"
+	enctype="multipart/form-data"
+	class="create-ticket-and-review-form">
+	{% csrf_token %}
+	<div class="form-group">
+		<h1>Livre/Article</h1>
+		<label
+			for="t_title"
+			class="form-label"
+			>Titre:</label
+		><br />
+		<input
+			type="text"
+			name="t_title"
+			class="form-control"
+			required />
+	</div>
+	<div class="form-group">
+		<label
+			for="t_description"
+			class="form-label"
+			>Description:</label
+		><br />
+		<textarea
+			name="t_description"
+			class="form-control"
+			required></textarea>
+	</div>
+	<div class="form-group">
+		<label
+			for="image"
+			class="form-label"
+			>Image:</label
+		><br />
+		<input
+			type="file"
+			name="image"
+			accept="image/*"
+			class="form-control" />
+	</div>
+	<hr />
+	<div class="form-group">
+		<h1>Créer une critique</h1>
+		<label
+			for="id_rating"
+			class="form-label"
+			>Évaluation:</label
+		><br />
+		{{ review_form.rating }}
+	</div>
+	<div class="form-group">
+		<label
+			for="id_title"
+			class="form-label"
+			>Titre:</label
+		><br />
+		{{ review_form.r_title }}
+	</div>
+	<div class="form-group">
+		<label
+			for="id_body"
+			class="form-label"
+			>Corps:</label
+		><br />
+		{{ review_form.r_description }}
+	</div>
+	<button
+		type="submit"
+		class="btn btn-primary">
+		Publier
+	</button>
+</form>
+{% endblock %}
