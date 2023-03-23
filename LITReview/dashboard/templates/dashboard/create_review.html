@@ -3,7 +3,7 @@
 	method="POST"
 	enctype="multipart/form-data"
 	class="create-ticket-and-review-form">
-	{% csrf_token %}
+	{% csrf_token %} {% comment %} create ticket {% endcomment %} {% if ticket is None %}
 	<div class="form-group">
 		<h1>Livre/Article</h1>
 		<label
@@ -41,6 +41,36 @@
 			class="form-control" />
 	</div>
 	<hr />
+	{% endif %} {% comment %} end create ticket {% endcomment %} {% comment %} display existing ticket from ticket_form {% endcomment %} {% if ticket is not None %}
+	<div class="form-group">
+		<h2>Vous êtes en train de proposer une réponse à:</h2>
+		<br />
+		<label
+			for="id_t_title"
+			class="form-label"
+			>Titre:</label
+		><br />
+		{{ ticket.t_title }}
+		<br /><br /><label
+			for="id_t_description"
+			class="form-label"
+			>Description:</label
+		><br />
+		{{ ticket.t_description }}
+		<br />
+		<label
+			for="id_image"
+			class="form-label"
+			>Image:</label
+		><br />
+		<br />
+		<img
+			src="{{ ticket.image.url }}"
+			alt="image"
+			class="feed-item-image" />
+	</div>
+	<hr />
+	{% endif %} {% comment %} end display existing ticket {% endcomment %} {% comment %} create review {% endcomment %}
 	<div class="form-group">
 		<h1>Créer une critique</h1>
 		<label
@@ -72,4 +102,4 @@
 		Publier
 	</button>
 </form>
-{% endblock %}
+{% comment %} end create review {% endcomment %} {% endblock %}

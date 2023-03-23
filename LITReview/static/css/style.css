@@ -186,13 +186,6 @@ form {
 	border-radius: 5px;
 }
 
-/* .create-ticket-form {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-} */
-
 .form-group {
 	margin-bottom: 15px;
 }
@@ -241,7 +234,8 @@ button[type='submit']:hover {
 	flex-direction: column;
 	justify-content: center;
 	gap: 20px;
-	width: 60%;
+	width: 600px;
+	min-width: 70%;
 }
 
 .feed-item {
@@ -260,7 +254,7 @@ button[type='submit']:hover {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	margin-top: 20px; /* place the button below other contents */
+	margin-top: 20px;
 }
 
 .feed-item-title {
@@ -299,6 +293,7 @@ button[type='submit']:hover {
 	cursor: pointer;
 	border-radius: 5px;
 	transition: all 0.2s ease-in-out;
+	margin-bottom: 20px;
 }
 
 .feed-item-reviews {
@@ -332,4 +327,42 @@ button[type='submit']:hover {
 
 .reviews-hidden {
 	display: none;
+}
+
+.username {
+	font-weight: normal;
+	margin-left: 22%;
+	justify-self: center;
+	font-family: 'Roboto', sans-serif;
+}
+
+.f-users {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	width: 60%;
+}
+
+.cross {
+	font-size: small !important;
+	background-color: rgb(121, 29, 29) !important;
+	border-radius: 100px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 200px !important;
+	height: 10px !important;
+	transform: translate(20px, -20px);
+}
+
+.list-abonnements {
+	display: inline-flex;
+	height: 25px;
+}
+
+.cross-icon {
+	position: absolute;
+	right: 10px;
 }

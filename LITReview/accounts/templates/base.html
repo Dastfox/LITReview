@@ -14,10 +14,13 @@
 			<h3>{% block nav_title %}{% endblock %}</h3>
 			{% if user.is_authenticated %}
 			<ul>
-				<li><a href="#">Flux</a></li>
-				<li><a href="#">Posts</a></li>
-				<li><a href="#">Abonnements</a></li>
-				<li><a href="{% url 'logout' %}">Se déconnecter</a></li>
+				<li><a href="{% url 'profile' %}">Profile: {{ request.user.username }}</a></li>
+				<li><a href="{% url 'dashboard' %}">Flux</a></li>
+				<li><a href="{% url 'posts' %}">Posts</a></li>
+				<li><a href="{% url 'abonnements' %}">Abonnements</a></li>
+				<li>
+					<a href="{% url 'logout' %}">Se déconnecter</a>
+				</li>
 			</ul>
 			{% endif %}
 		</div>
