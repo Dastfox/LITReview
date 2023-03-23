@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-    Profile ({{ request.user.username }})
+    Profile
 {% endblock title %}
 {% block nav_title %}
     Profile
@@ -45,47 +45,6 @@
         <div class="form-group">
             <label for="password">Nouveau mot de passe</label>
             <input type="password" id="password" name="password" class="form-control" />
-        </div>
-        <div>
-            <h3>Abonnements</h3>
-            {% comment %} list of followed users {% endcomment %}
-            <h4>Ajouter un utilisateur:</h4>
-            <div>
-                <input type="text"
-                       id="followed_users"
-                       name="followed_users"
-                       class="form-control"
-                       placeholder="Nom d'utilisateur"/>
-                <button type="submit" class="btn btn-primary">Ajouter</button>
-            </div>
-            <hr />
-            <h4>utilisateurs suivis:</h4>
-            <div>
-                {% for followed_user in followed_users %}
-                    {% comment %}
-			<li>
-                    {% endcomment %}
-                    <p class="list-abonnements">
-                        {% comment %} cross icon to remove user from followed {% endcomment %}
-                        {{ followed_user.username }}
-                        <a class="delete-followed-user"
-                           href="{% url 'remove-followed-user' followed_user.id 'profile' %}">Delete</a>
-                    </p>
-                    <hr />
-                {% endfor %}
-            </div>
-            <h4>utilisateurs vous suivant:</h4>
-            <div>
-                {% for following_user in followed_by_users %}
-                    {% comment %}
-			<li>
-                    {% endcomment %}
-                    <p class="list-abonnements">
-                        {{ following_user.username }}
-                        {% comment %} cross icon to remove user from followed {% endcomment %}
-                    </p>
-                {% endfor %}
-            </div>
         </div>
         <button type="submit" class="btn btn-primary">Enregistrer</button>
     </form>

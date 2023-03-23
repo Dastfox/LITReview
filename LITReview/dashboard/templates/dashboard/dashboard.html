@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
     Dashboard
-    {% if feed_type %}- {{ feed_type|title }}{% endif %}
 {% endblock title %}
 {% block nav_title %}
     {% if feed_type %}
@@ -30,19 +29,6 @@
                     {% for item in feed_items %}
                         <div class="feed-item">
                             <div class="feed-item-header">
-                                {% if item.user == request.user %}
-                                    <a href="{% url 'update-ticket' item.id %}" class="update-button">
-                                        <?xml version="1.0" encoding="UTF-8"?>
-                                        <svg href="{% url 'update-ticket' item.id %}"
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             width="20"
-                                             height="20"
-                                             viewBox="0 0 20 20">
-                                            <title>edit</title>
-                                            <path d="M16.77 8l1.94-2a1 1 0 0 0 0-1.41l-3.34-3.3a1 1 0 0 0-1.41 0L12 3.23zm-5.81-3.71L1 14.25V19h4.75l9.96-9.96-4.75-4.75z" />
-                                        </svg>
-                                    </a>
-                                {% endif %}
                                 <h4 class="feed-item-review-body">
                                     {% if item.user != request.user and item.user not in followed_users %}
                                         <a href="{% url 'add-followed-user' item.user.id %}"
@@ -87,12 +73,36 @@
                                     <h3 class="feed-item-title">{{ item.t_title }}</h3>
                                 {% endif %}
                                 <p class="feed-item-description">{{ item.t_description }}</p>
+                                {% if item.user == request.user %}
+                                    <a href="{% url 'update-ticket' item.id %}" class="update-button">
+                                        <?xml version="1.0" encoding="UTF-8"?>
+                                        <svg href="{% url 'update-ticket' item.id %}"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 20 20">
+                                            <title>edit</title>
+                                            <path d="M16.77 8l1.94-2a1 1 0 0 0 0-1.41l-3.34-3.3a1 1 0 0 0-1.41 0L12 3.23zm-5.81-3.71L1 14.25V19h4.75l9.96-9.96-4.75-4.75z" />
+                                        </svg>
+                                    </a>
+                                    <a href="{% url 'delete-ticket' item.id %}" class="update-button">
+                                        <svg width="24"
+                                             height="24"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             fill-rule="evenodd"
+                                             clip-rule="evenodd">
+                                            <path d="M19 24h-14c-1.104 0-2-.896-2-2v-16h18v16c0 1.104-.896 2-2 2m-9-14c0-.552-.448-1-1-1s-1 .448-1 1v9c0 .552.448 1 1 1s1-.448 1-1v-9zm6 0c0-.552-.448-1-1-1s-1 .448-1 1v9c0 .552.448 1 1 1s1-.448 1-1v-9zm6-5h-20v-2h6v-1.5c0-.827.673-1.5 1.5-1.5h5c.825 0 1.5.671 1.5 1.5v1.5h6v2zm-12-2h4v-1h-4v1z"/>
+                                        </svg>
+                                    </a>
+                                {% endif %}
                             </div>
                             <div class="button-image-section">
-                                <a href="{% url 'new-review-with-ticket' ticket_id=item.id %}"
-                                   class="review-button">Créer une critique</a
-                                    >
-                                    <br />
+                                {% if not item.review_set.exists %}
+                                    <a href="{% url 'new-review-with-ticket' ticket_id=item.id %}"
+                                       class="review-button">Créer une critique</a
+                                        >
+                                        <br />
+                                    {% endif %}
                                     {% if item.image %}
                                         <img width="200"
                                              height="200"
@@ -107,11 +117,35 @@
                                 <div class="feed-item-reviews-container">
                                     <ul class="feed-item-reviews">
                                         {% for review in item.review_set.all %}
-                                            <li class="feed-item-review">
-                                                <h4 class="feed-item-review-body">{{ review.user.username }}:</h4>
-                                                <h5 class="feed-item-review-title">{{ review.r_title }} - {{ review.rating }}/5</h5>
-                                                <p class="feed-item-review-body">{{ review.r_description }}</p>
-                                            </li>
+                                            {% if page_title != "posts" or review.user == request.user %}
+                                                <li class="feed-item-review">
+                                                    <h4 class="feed-item-review-body">{{ review.user.username }}:</h4>
+                                                    <h5 class="feed-item-review-title">{{ review.r_title }} - {{ review.rating }}/5</h5>
+                                                    <p class="feed-item-review-body">{{ review.r_description }}</p>
+                                                    {% if review.user == request.user %}
+                                                        <a href="{% url 'update-review' review.id %}" class="update-button">
+                                                            <?xml version="1.0" encoding="UTF-8"?>
+                                                            <svg href="{% url 'update-ticket' item.id %}"
+                                                                 xmlns="http://www.w3.org/2000/svg"
+                                                                 width="20"
+                                                                 height="20"
+                                                                 viewBox="0 0 20 20">
+                                                                <title>edit</title>
+                                                                <path d="M16.77 8l1.94-2a1 1 0 0 0 0-1.41l-3.34-3.3a1 1 0 0 0-1.41 0L12 3.23zm-5.81-3.71L1 14.25V19h4.75l9.96-9.96-4.75-4.75z" />
+                                                            </svg>
+                                                        </a>
+                                                        <a href="{% url 'delete-review' review.id %}" class="update-button">
+                                                            <svg width="24"
+                                                                 height="24"
+                                                                 xmlns="http://www.w3.org/2000/svg"
+                                                                 fill-rule="evenodd"
+                                                                 clip-rule="evenodd">
+                                                                <path d="M19 24h-14c-1.104 0-2-.896-2-2v-16h18v16c0 1.104-.896 2-2 2m-9-14c0-.552-.448-1-1-1s-1 .448-1 1v9c0 .552.448 1 1 1s1-.448 1-1v-9zm6 0c0-.552-.448-1-1-1s-1 .448-1 1v9c0 .552.448 1 1 1s1-.448 1-1v-9zm6-5h-20v-2h6v-1.5c0-.827.673-1.5 1.5-1.5h5c.825 0 1.5.671 1.5 1.5v1.5h6v2zm-12-2h4v-1h-4v1z"/>
+                                                            </svg>
+                                                        </a>
+                                                    {% endif %}
+                                                </li>
+                                            {% endif %}
                                         {% endfor %}
                                     </ul>
                                 {% endif %}

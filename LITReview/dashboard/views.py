@@ -1,3 +1,8 @@
+from django.db.models import Q
+from .models import Ticket
+from django.shortcuts import render, redirect
+from django.db.models import Count, Q
+from django.core.paginator import Paginator
 from itertools import chain
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -26,6 +31,12 @@ def create_ticket(request, id=None):
             ticket.save()
             return redirect('dashboard')
     return render(request, 'dashboard/create_ticket.html', {'form': form})
+
+
+def delete_ticket(request, id, redirect_to='dashboard'):
+    ticket = get_object_or_404(Ticket, pk=id, user=request.user)
+    ticket.delete()
+    return redirect(redirect_to)
 
 
 def create_review(request, ticket_id=None, id=None):
@@ -61,25 +72,55 @@ def create_review(request, ticket_id=None, id=None):
     return render(request, 'dashboard/create_review.html', {'ticket_form': ticket_form, 'review_form': review_form, 'ticket': ticket})
 
 
-def dashboard(request, feed_type='dashboard'):
+def delete_review(request, id, redirect_to='dashboard'):
+    review = get_object_or_404(Review, pk=id, user=request.user)
+    review.delete()
+    return redirect(redirect_to)
+
+
+def dashboard(request, feed_type=None):
+    followed_user_ids = UserFollows.objects.filter(
+        user=request.user).values_list('followed_user__id', flat=True)
+    followed_users = User.objects.filter(id__in=followed_user_ids)
+    user_tickets = Ticket.objects.filter(
+        user=request.user).annotate(review_count=Count('review'))
+    other_tickets = Ticket.objects.filter(user__in=followed_users).exclude(
+        user=request.user).annotate(review_count=Count('review'))
+    remaining_tickets = Ticket.objects.exclude(Q(user__in=followed_users) | Q(
+        user=request.user)).annotate(review_count=Count('review'))
+    sorted_tickets = sorted(chain(user_tickets, other_tickets, remaining_tickets),
+                            key=lambda instance: instance.time_created, reverse=True)
+    context = {
+        'feed_items': sorted_tickets,
+        'show_reviews': True,
+        'feed_type': 'dashboard',
+        'followed_users': followed_users,
+    }
+    return render(request, 'dashboard/dashboard.html', context)
+
+
+def posts(request, feed_type=None):
     followed_user_ids = UserFollows.objects.filter(
         user=request.user).values_list('followed_user__id', flat=True)
     followed_users = User.objects.filter(id__in=followed_user_ids)
 
-    if feed_type == 'posts':
-        tickets = Ticket.objects.filter(user=request.user).annotate(
-            review_count=Count('review'))
-    elif feed_type == 'abonnements':
-        tickets = Ticket.objects.filter(user__in=followed_users).annotate(
-            review_count=Count('review'))
-    else:
-        tickets = Ticket.objects.all().annotate(review_count=Count('review'))
+    # Fetch tickets created by the user
+    user_tickets = Ticket.objects.filter(
+        user=request.user).annotate(review_count=Count('review'))
 
-    feed_items = sorted(
-        chain(tickets),
-        key=lambda instance: instance.time_created,
-        reverse=True
-    )
-    context = {'feed_items': feed_items,
-               'show_reviews': True, 'feed_type': feed_type, 'followed_users': followed_users}
+    # Fetch tickets with reviews written by the user
+    user_reviewed_tickets = Ticket.objects.filter(
+        review__user=request.user).annotate(review_count=Count('review'))
+
+    # Combine user_tickets and user_reviewed_tickets, removing duplicates using the "distinct" method
+    combined_tickets = user_tickets | user_reviewed_tickets
+    combined_tickets = combined_tickets.distinct().order_by('-time_created')
+
+    context = {
+        'feed_items': combined_tickets,
+        'show_reviews': True,
+        'feed_type': 'dashboard',
+        'followed_users': followed_users,
+        'page_title': 'posts'
+    }
     return render(request, 'dashboard/dashboard.html', context)

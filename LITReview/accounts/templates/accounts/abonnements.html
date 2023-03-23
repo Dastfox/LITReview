@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}
+    Abonnements
+{% endblock title %}
+{% block nav_title %}
+    Abonnements
+{% endblock nav_title %}
+{% block content %}
+    {% load static %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <h3>Abonnements</h3>
+            <h4>Ajouter un utilisateur:</h4>
+            <div class="add-user-div">
+                <label for="followed_users">Nom d'utilisateur:</label>
+                <input type="text"
+                       id="followed_users"
+                       name="followed_users"
+                       class="form-control"
+                       placeholder="Entrez un nom d'utilisateur"/>
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
+            <hr />
+            <h4>Utilisateurs suivis:</h4>
+            <ul>
+                {% for followed_user in followed_users %}
+                    <li>
+                        <p class="list-abonnements">
+                            {{ followed_user.username }}
+                            <a class="delete-followed-user"
+                               href="{% url 'remove-followed-user' followed_user.id 'abonnements' %}">Delete</a>
+                        </p>
+                    </li>
+                {% empty %}
+                    <p>Aucun utilisateur suivi.</p>
+                {% endfor %}
+            </ul>
+            <hr />
+            <h4>Utilisateurs vous suivant:</h4>
+            <ul>
+                {% for following_user in following_users %}
+                    <li>
+                        <p class="list-abonnements">{{ following_user.username }}</p>
+                    </li>
+                {% empty %}
+                    <p>Aucun utilisateur ne vous suit.</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </form>
+{% endblock content %}

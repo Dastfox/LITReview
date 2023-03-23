@@ -62,3 +62,8 @@ class ProfileForm(forms.ModelForm):
                         UserFollows.objects.create(
                             user=instance, followed_user=user)
         return instance
+
+
+class AddFollowedUserForm(forms.Form):
+    followed_users = forms.CharField(max_length=50, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Nom d\'utilisateur'}))

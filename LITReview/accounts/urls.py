@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
@@ -20,4 +21,6 @@ urlpatterns = [
 
     path('profile/add-followed-user/<int:user_id>/',
          views.add_followed_user, name='add-followed-user'),
+    path('abonnements/',  views.abonnements,
+         name='abonnements'),
 ]
