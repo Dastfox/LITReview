@@ -5,10 +5,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-from django.db import transaction
-
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse
+from .models import UserFollows
 from .models import UserFollows
 from .models import ProfileForm
 
@@ -38,11 +40,17 @@ def profile(request):
         user=request.user).values_list('followed_user__id', flat=True)
     followed_users = User.objects.filter(id__in=followed_user_ids)
 
+    followed_by_user_ids = UserFollows.objects.filter(
+        followed_user=request.user).values_list('user__id', flat=True)
+    followed_by_users = User.objects.filter(id__in=followed_by_user_ids)
+
     users = User.objects.exclude(id=request.user.id)
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
+            # add the followed users to the form
+            
             form.save()
             messages.success(request, 'Profile updated successfully.')
         else:
@@ -55,7 +63,42 @@ def profile(request):
     context = {
         'users': users,
         'followed_users': followed_users,
-        'form': form
+        'followed_by_users': followed_by_users,
+        'form': form,
+        'selected_users': None
     }
 
     return render(request, 'accounts/profile.html', context)
+
+
+@login_required
+def remove_followed_user(request, user_id, redirect_to= 'dashboard'):
+
+    followed_user = get_object_or_404(User, id=user_id)
+    print(followed_user.username, request.user.username)
+    user_follows = UserFollows.objects.filter(
+        user=request.user, followed_user=followed_user)
+    if user_follows.exists():
+        user_follows.delete()
+        messages.success(
+            request, f"{followed_user.username} has been removed from your followed users.")
+    else:
+        messages.warning(
+            request, f"{followed_user.username} is not in your list of followed users.")
+    return redirect(redirect_to)
+
+
+@login_required
+def add_followed_user(request, user_id, redirect_to = 'dashboard'):
+
+    followed_user = get_object_or_404(User, id=user_id)
+    print(followed_user.username, request.user.username)
+    user_follows, created = UserFollows.objects.get_or_create(
+        user=request.user, followed_user=followed_user)
+    if created:
+        messages.success(
+            request, f"{followed_user.username} has been added to your followed users.")
+    else:
+        messages.warning(
+            request, f"{followed_user.username} is already in your list of followed users.")
+    return redirect(redirect_to)

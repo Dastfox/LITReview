@@ -61,14 +61,15 @@ def create_review(request, ticket_id=None, id=None):
     return render(request, 'dashboard/create_review.html', {'ticket_form': ticket_form, 'review_form': review_form, 'ticket': ticket})
 
 
-def dashboard(request, feed_type=None):
+def dashboard(request, feed_type='dashboard'):
+    followed_user_ids = UserFollows.objects.filter(
+        user=request.user).values_list('followed_user__id', flat=True)
+    followed_users = User.objects.filter(id__in=followed_user_ids)
+
     if feed_type == 'posts':
         tickets = Ticket.objects.filter(user=request.user).annotate(
             review_count=Count('review'))
     elif feed_type == 'abonnements':
-        followed_user_ids = UserFollows.objects.filter(
-            user=request.user).values_list('followed_user__id', flat=True)
-        followed_users = User.objects.filter(id__in=followed_user_ids)
         tickets = Ticket.objects.filter(user__in=followed_users).annotate(
             review_count=Count('review'))
     else:
@@ -80,5 +81,5 @@ def dashboard(request, feed_type=None):
         reverse=True
     )
     context = {'feed_items': feed_items,
-               'show_reviews': True, 'feed_type': feed_type}
+               'show_reviews': True, 'feed_type': feed_type, 'followed_users': followed_users}
     return render(request, 'dashboard/dashboard.html', context)

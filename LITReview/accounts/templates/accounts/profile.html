@@ -1,104 +1,92 @@
-{% extends 'base.html' %} {% block title %}Profile ({{ request.user.username }}){% endblock %} {% block nav_title %}Profile{% endblock %} {% block content %} {% load static %}
-<h2>Modifier votre profil</h2>
-<form method="post">
-	{% csrf_token %}
-	<div class="form-group">
-		<label for="username">Nom d'utilisateur</label>
-		<input
-			type="text"
-			id="username"
-			name="username"
-			value="{{ user.username }}"
-			class="form-control" />
-	</div>
-	<div class="form-group">
-		<label for="first_name">Prénom</label>
-		<input
-			type="text"
-			id="first_name"
-			name="first_name"
-			value="{{ user.first_name }}"
-			class="form-control" />
-	</div>
-	<div class="form-group">
-		<label for="last_name">Nom de famille</label>
-		<input
-			type="text"
-			id="last_name"
-			name="last_name"
-			value="{{ user.last_name }}"
-			class="form-control" />
-	</div>
-	<div class="form-group">
-		<label for="email">Adresse e-mail</label>
-		<input
-			type="email"
-			id="email"
-			name="email"
-			value="{{ user.email }}"
-			class="form-control" />
-	</div>
-	<div class="form-group">
-		<label for="password">Nouveau mot de passe</label>
-		<input
-			type="password"
-			id="password"
-			name="password"
-			class="form-control" />
-	</div>
-
-	<div>
-		<h3>Abonnements</h3>
-		{% comment %} add a select on users to add them in followed {% endcomment %}
-		<h4>suivre un utilisateur:</h4>
-		<select
-			name="followed_users"
-			class="f-users">
-			{% for user in users %} {% if user not in followed_users %}
-			<option value="{{ user.id }}">{{ user.username }}</option>
-			{% endif %} {% endfor %}
-		</select>
-		{% comment %} button that adds selected user {% endcomment %}
-		<button
-			type="submit"
-			class="btn btn-primary"
-			name="add_followed_user"
-			value="add_followed_user">
-			Ajouter
-		</button>
-		{% comment %} list of followed users {% endcomment %}
-		<h4>utilisateurs suivis:</h4>
-		<div>
-			{% for followed_user in followed_users %} {% comment %}
+{% extends "base.html" %}
+{% block title %}
+    Profile ({{ request.user.username }})
+{% endblock title %}
+{% block nav_title %}
+    Profile
+{% endblock nav_title %}
+{% block content %}
+    {% load static %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>Modifier votre profil:</h2>
+        <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text"
+                   id="username"
+                   name="username"
+                   value="{{ user.username }}"
+                   class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="first_name">Prénom</label>
+            <input type="text"
+                   id="first_name"
+                   name="first_name"
+                   value="{{ user.first_name }}"
+                   class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Nom de famille</label>
+            <input type="text"
+                   id="last_name"
+                   name="last_name"
+                   value="{{ user.last_name }}"
+                   class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="email">Adresse e-mail</label>
+            <input type="email"
+                   id="email"
+                   name="email"
+                   value="{{ user.email }}"
+                   class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="password">Nouveau mot de passe</label>
+            <input type="password" id="password" name="password" class="form-control" />
+        </div>
+        <div>
+            <h3>Abonnements</h3>
+            {% comment %} list of followed users {% endcomment %}
+            <h4>Ajouter un utilisateur:</h4>
+            <div>
+                <input type="text"
+                       id="followed_users"
+                       name="followed_users"
+                       class="form-control"
+                       placeholder="Nom d'utilisateur"/>
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
+            <hr />
+            <h4>utilisateurs suivis:</h4>
+            <div>
+                {% for followed_user in followed_users %}
+                    {% comment %}
 			<li>
-				{% endcomment %}
-				<p class="list-abonnements">
-					<button
-						type="submit"
-						class="btn cross"
-						name="remove_followed_user"
-						value="{{ followed_user.id }}">
-						{{ followed_user.username }}
-						<svg
-							class="cross-icon"
-							style="width: 1em; height: 1em; vertical-align: middle; fill: currentColor; overflow: hidden"
-							viewBox="0 0 1024 1024"
-							version="1.1"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M810.65984 170.65984q18.3296 0 30.49472 12.16512t12.16512 30.49472q0 18.00192-12.32896 30.33088l-268.67712 268.32896 268.67712 268.32896q12.32896 12.32896 12.32896 30.33088 0 18.3296-12.16512 30.49472t-30.49472 12.16512q-18.00192 0-30.33088-12.32896l-268.32896-268.67712-268.32896 268.67712q-12.32896 12.32896-30.33088 12.32896-18.3296 0-30.49472-12.16512t-12.16512-30.49472q0-18.00192 12.32896-30.33088l268.67712-268.32896-268.67712-268.32896q-12.32896-12.32896-12.32896-30.33088 0-18.3296 12.16512-30.49472t30.49472-12.16512q18.00192 0 30.33088 12.32896l268.32896 268.67712 268.32896-268.67712q12.32896-12.32896 30.33088-12.32896z" />
-						</svg>
-					</button>
-				</p>
-				{% comment %} cross icon to remove user from followed {% endcomment %} {% comment %}
-			</li>
-			{% endcomment %} {% endfor %}
-		</div>
-	</div>
-	<button
-		type="submit"
-		class="btn btn-primary">
-		Enregistrer
-	</button>
-</form>
-{% endblock %}
+                    {% endcomment %}
+                    <p class="list-abonnements">
+                        {% comment %} cross icon to remove user from followed {% endcomment %}
+                        {{ followed_user.username }}
+                        <a class="delete-followed-user"
+                           href="{% url 'remove-followed-user' followed_user.id 'profile' %}">Delete</a>
+                    </p>
+                    <hr />
+                {% endfor %}
+            </div>
+            <h4>utilisateurs vous suivant:</h4>
+            <div>
+                {% for following_user in followed_by_users %}
+                    {% comment %}
+			<li>
+                    {% endcomment %}
+                    <p class="list-abonnements">
+                        {{ following_user.username }}
+                        {% comment %} cross icon to remove user from followed {% endcomment %}
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </form>
+{% endblock content %}

@@ -31,6 +31,7 @@ class UserFollows(models.Model):
 
 
 class ProfileForm(forms.ModelForm):
+
     followed_users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'followed-users'}),
@@ -47,9 +48,13 @@ class ProfileForm(forms.ModelForm):
         self.fields['followed_users'].initial = followed_users or User.objects.none()
 
     def save(self, commit=True):
+        print("TRUC", self.cleaned_data['followed_users'])
         instance = super().save(commit=commit)
         if commit:
             with transaction.atomic():
+                # Delete existing followed users
+                UserFollows.objects.filter(followed_user=instance).delete()
+
                 # Add new followed users
                 followed_users = self.cleaned_data['followed_users']
                 if followed_users:

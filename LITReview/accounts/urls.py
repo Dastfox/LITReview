@@ -15,4 +15,9 @@ urlpatterns = [
          name='password_reset_complete'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+    path('profile/remove-followed-user/<int:user_id>/<path:redirect_to>/',
+         views.remove_followed_user, name='remove-followed-user'),
+
+    path('profile/add-followed-user/<int:user_id>/',
+         views.add_followed_user, name='add-followed-user'),
 ]

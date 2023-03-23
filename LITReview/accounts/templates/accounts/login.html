@@ -1,23 +1,25 @@
-{% extends 'base.html' %} {% load static %} {% block title %}Login{% endblock %} {% block nav_title%}LITReview{%endblock%} {% block content %}
-<div class="login-register">
-	<div class="register">
-		<h2>Inscription</h2>
-		<p class="login-register-section">
-			<a
-				href="{% url 'register' %}"
-				class="register-btn"
-				>Inscrivez-vous ici</a
-			>
-		</p>
-	</div>
-	<div class="login">
-		<h2>Connexion</h2>
-		<form
-			class="login-register-section"
-			method="post">
-			{% csrf_token %} {{ form.as_p }}
-			<button type="submit">Login</button>
-		</form>
-	</div>
-</div>
-{% endblock %}
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Login
+{% endblock title %}
+{% block nav_title %}
+    LITReview
+{% endblock nav_title %}
+{% block content %}
+    <div class="login-register">
+        <div class="register">
+            <h2>Inscription</h2>
+            <p class="login-register-section">
+                <a href="{% url 'register' %}" class="register-btn">Inscrivez-vous ici</a>
+            </p>
+        </div>
+        <div class="login">
+            <h2>Connexion</h2>
+            <form class="login-register-section" method="post">
+                {% csrf_token %} {{ form.as_p }}
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

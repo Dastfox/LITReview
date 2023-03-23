@@ -10,7 +10,6 @@ header {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 1;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -20,6 +19,7 @@ header {
 nav {
 	background-color: #839ebb; /* added */
 	position: fixed;
+	z-index: 1;
 	height: 5% !important;
 	width: 105%;
 	top: -5px;
@@ -358,11 +358,19 @@ button[type='submit']:hover {
 }
 
 .list-abonnements {
-	display: inline-flex;
+	display: flex;
+	justify-content: space-between;
 	height: 25px;
 }
 
-.cross-icon {
-	position: absolute;
-	right: 10px;
+.delete-followed-user {
+	background-color: #ff000042;
+	display: flex;
+	width: 60px;
+	justify-content: center;
+	align-items: center;
+	outline: 1px solid #ccc;
+	margin-left: 20px;
+	text-decoration: none;
+	color: #000000;
 }
