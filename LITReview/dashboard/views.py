@@ -2,14 +2,14 @@ from django.db.models import Q
 from .models import Ticket
 from django.shortcuts import render, redirect
 from django.db.models import Count, Q
-from django.core.paginator import Paginator
 from itertools import chain
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.models import UserFollows
-from .models import Review, Ticket, TicketForm, ReviewForm
-from django.db.models import F, Count
+from .models import Review, Ticket
+from django.db.models import Count
 from django.contrib.auth.models import User
+from .forms import TicketForm, ReviewForm
 # Create your views here.
 
 
@@ -95,6 +95,7 @@ def dashboard(request, feed_type=None):
         'show_reviews': True,
         'feed_type': 'dashboard',
         'followed_users': followed_users,
+        'rating_range': range(1, 6),
     }
     return render(request, 'dashboard/dashboard.html', context)
 
@@ -121,6 +122,7 @@ def posts(request, feed_type=None):
         'show_reviews': True,
         'feed_type': 'dashboard',
         'followed_users': followed_users,
-        'page_title': 'posts'
+        'page_title': 'posts',
+        'rating_range': range(1, 6),
     }
     return render(request, 'dashboard/dashboard.html', context)

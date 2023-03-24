@@ -1,59 +1,17 @@
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.db import DatabaseError
 from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse
-from .models import AddFollowedUserForm, UserFollows
+
+from .forms import AddFollowedUserForm
 from .models import UserFollows
-from .models import ProfileForm
+from .forms import ProfileForm
 
 from django.shortcuts import render, redirect
-
-
-@login_required
-def abonnements(request):
-    try:
-        followed_user_ids = UserFollows.objects.filter(
-            user=request.user).values_list('followed_user__id', flat=True)
-        followed_users = User.objects.filter(id__in=followed_user_ids)
-        following_user_ids = UserFollows.objects.filter(
-            followed_user=request.user).values_list('user__id', flat=True)
-        following_users = User.objects.filter(id__in=following_user_ids)
-    except DatabaseError:
-        followed_users = []
-        following_users = []
-
-    if request.method == 'POST':
-        form = AddFollowedUserForm(request.POST)
-        if form.is_valid():
-            followed_username = form.cleaned_data['followed_users']
-            try:
-                followed_user = User.objects.get(username=followed_username)
-                if UserFollows.objects.filter(user=request.user, followed_user=followed_user).exists():
-                    messages.warning(
-                        request, 'Vous suivez déjà cet utilisateur')
-                else:
-                    UserFollows.objects.create(
-                        user=request.user, followed_user=followed_user)
-                    messages.success(
-                        request, f'Vous suivez maintenant {followed_username}')
-            except User.DoesNotExist:
-                messages.error(
-                    request, f"L'utilisateur {followed_username} n'existe pas")
-    else:
-        form = AddFollowedUserForm()
-
-    context = {'followed_users': followed_users,
-               'following_users': following_users, 'form': form}
-    return render(request, 'accounts/abonnements.html', context)
 
 
 def register(request):
@@ -106,6 +64,44 @@ def profile(request):
     }
 
     return render(request, 'accounts/profile.html', context)
+
+
+@login_required
+def abonnements(request):
+    try:
+        followed_user_ids = UserFollows.objects.filter(
+            user=request.user).values_list('followed_user__id', flat=True)
+        followed_users = User.objects.filter(id__in=followed_user_ids)
+        following_user_ids = UserFollows.objects.filter(
+            followed_user=request.user).values_list('user__id', flat=True)
+        following_users = User.objects.filter(id__in=following_user_ids)
+    except DatabaseError:
+        followed_users = []
+        following_users = []
+
+    if request.method == 'POST':
+        form = AddFollowedUserForm(request.POST)
+        if form.is_valid():
+            followed_username = form.cleaned_data['followed_users']
+            try:
+                followed_user = User.objects.get(username=followed_username)
+                if UserFollows.objects.filter(user=request.user, followed_user=followed_user).exists():
+                    messages.warning(
+                        request, 'Vous suivez déjà cet utilisateur')
+                else:
+                    UserFollows.objects.create(
+                        user=request.user, followed_user=followed_user)
+                    messages.success(
+                        request, f'Vous suivez maintenant {followed_username}')
+            except User.DoesNotExist:
+                messages.error(
+                    request, f"L'utilisateur {followed_username} n'existe pas")
+    else:
+        form = AddFollowedUserForm()
+
+    context = {'followed_users': followed_users,
+               'following_users': following_users, 'form': form}
+    return render(request, 'accounts/abonnements.html', context)
 
 
 @login_required

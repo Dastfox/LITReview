@@ -36,7 +36,6 @@
                 <br />
                 <input type="file" name="image" accept="image/*" class="form-control" />
             </div>
-            <hr />
         {% endif %}
         {% comment %} end create ticket {% endcomment %} {% comment %} display existing ticket from ticket_form {% endcomment %}
         {% if ticket is not None %}
@@ -70,9 +69,9 @@
                      alt="image"
                      class="feed-item-image"/>
             </div>
-            <hr />
         {% endif %}
         {% comment %} end display existing ticket {% endcomment %} {% comment %} create review {% endcomment %}
+        <hr />
         <div class="form-group">
             <h1>Créer une critique</h1>
             <label for="id_rating" class="form-label">

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% comment %} {% extends "base.html" %}
 {% block title %}
     Dashboard
     {% if feed_type %}- {{ feed_type|title }}{% endif %}
@@ -13,9 +13,7 @@
 {% block content %}
     {% load static %}
     <head>
-        <link rel="script"
-              type="text/javascript"
-              href="{% static 'js/script.js' %}"/>
+        <link rel="script" type="text/javascript" href="{% static 'js/script.js' %}"/>
     </head>
     <div class="buttons-container">
         <a href="{% url 'new-ticket' %}" class="critic-button ask">Demander une critique</a
@@ -33,8 +31,7 @@
                                 <div class="feed-item-header">
                                     <h4 class="feed-item-review-body">
                                         {% if item.user != request.user and item.user not in followed_users %}
-                                            <a href="{% url 'add-followed-user' item.user.id %}"
-                                               class="follow-button">
+                                            <a href="{% url 'add-followed-user' item.user.id %}" class="follow-button">
                                                 <?xml version="1.0" encoding="UTF-8"?>
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      width="24"
@@ -119,4 +116,4 @@
                         {% endfor %}
                     </div>
                 </div>
-            {% endblock content %}
+{% endblock content %} {% endcomment %}
